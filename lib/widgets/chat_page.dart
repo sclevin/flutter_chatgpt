@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chatgpt/injection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../models/message.dart';
@@ -62,6 +63,15 @@ class ChatPage extends HookConsumerWidget {
     var message = Message(content, MessageSenderType.user, DateTime.now());
     ref.read(messageProvider.notifier).addMessage(message);
     _textController.clear();
+    _requestChatGPT(ref, content);
+  }
+
+
+  void _requestChatGPT(WidgetRef ref, String content) async {
+    final res =  await chatService.sendMessage(content);
+    final msg = res.choices.first.message?.content ?? "";
+    final message = Message(msg, MessageSenderType.chatgpt, DateTime.now());
+    ref.read(messageProvider.notifier).addMessage(message);
   }
 }
 
