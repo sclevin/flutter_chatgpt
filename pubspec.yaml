@@ -38,6 +38,7 @@ dependencies:
   hooks_riverpod: ^2.5.1
   openai_api: ^0.3.7
   envied: ^0.3.0+3
+  logger: ^2.4.0
 
 dev_dependencies:
   flutter_test:

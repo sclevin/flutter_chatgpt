@@ -3,7 +3,9 @@ import 'package:flutter_chatgpt/injection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../models/message.dart';
+import '../states/chat_ui_state.dart';
 import '../states/message_state.dart';
+import 'message_item.dart';
 
 /// Description:
 /// Author:LiaoWen
@@ -17,6 +19,7 @@ class ChatPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context,WidgetRef ref) {
     final messages= ref.watch(messageProvider);
+    final chatUiState = ref.watch(chatUiProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -39,6 +42,7 @@ class ChatPage extends HookConsumerWidget {
             ),
 
             TextField(
+              enabled: !chatUiState.onLoading,
               controller: _textController,
               decoration: InputDecoration(
                 hintText: 'Type a message',
@@ -46,7 +50,6 @@ class ChatPage extends HookConsumerWidget {
                   onPressed: (){
                     if(_textController.text.isNotEmpty){
                       _sendMessage(ref, _textController.text);
-
                     }
                   },
                   icon: const Icon(Icons.send),
@@ -68,31 +71,22 @@ class ChatPage extends HookConsumerWidget {
 
 
   void _requestChatGPT(WidgetRef ref, String content) async {
-    final res =  await chatService.sendMessage(content);
-    final msg = res.choices.first.message?.content ?? "";
-    final message = Message(msg, MessageSenderType.chatgpt, DateTime.now());
-    ref.read(messageProvider.notifier).addMessage(message);
+    ref.read(chatUiProvider.notifier).setLoading(true);
+
+    try {
+      final res =  await chatService.sendMessage(content);
+
+      final msg = res.choices.first.message?.content ?? "";
+      final message = Message(msg, MessageSenderType.chatgpt, DateTime.now());
+      ref.read(messageProvider.notifier).addMessage(message);
+    } catch (e) {
+      // logger.e(e);
+    } finally {
+      ref.read(chatUiProvider.notifier).setLoading(false);
+
+    }
+
   }
 }
 
-
-class MessageItem extends StatelessWidget {
-  final Message message;
-  const MessageItem({super.key,required this.message});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        CircleAvatar(
-          child: message.sender == MessageSenderType.user ? Text("A") : Text("GPT"),
-        ),
-        const SizedBox(
-          width: 8,
-        ),
-        Text(message.content),
-      ],
-    );
-  }
-}
 
