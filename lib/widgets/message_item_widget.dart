@@ -5,9 +5,9 @@ import '../models/message.dart';
 /// Description:
 /// Author:LiaoWen
 /// Date:2024/7/19
-class MessageItem extends StatelessWidget {
+class MessageItemWidget extends StatelessWidget {
   final Message message;
-  const MessageItem({super.key,required this.message});
+  const MessageItemWidget({super.key,required this.message});
 
   @override
   Widget build(BuildContext context) {
