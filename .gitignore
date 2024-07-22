@@ -33,6 +33,8 @@ migrate_working_dir/
 
 .env
 lib/env/env.g.dart
+*.g.dart
+*.freezed.dart
 
 # Symbolication related
 app.*.symbols

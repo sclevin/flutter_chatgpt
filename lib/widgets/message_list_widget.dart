@@ -21,6 +21,7 @@ class MessageListWidget extends HookConsumerWidget {
       });
     });
     return ListView.separated(
+      controller: listController,
         itemBuilder: (context, index) {
           return MessageItemWidget(message: messages[index],);
         },

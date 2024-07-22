@@ -14,19 +14,13 @@ class ChatgptService{
       )
   );
 
-  Future<ChatCompletionResponse> sendMessage(String content) async {
-    var request = ChatCompletionRequest(model: Models.gpt3_5Turbo,messages: [
-      ChatMessage(
-        content: content,
-        role: ChatMessageRole.user
-      )
-    ]);
 
-    return await client.sendChatCompletion(request);
-  }
 
   Future sendMessageWithStream(String content,{Function(String text)? onSuccess}) async {
-    var request = ChatCompletionRequest(model: Models.gpt3_5Turbo,messages: [
+    var request = ChatCompletionRequest(
+        model: Models.gpt3_5Turbo,
+        stream: true,
+        messages: [
       ChatMessage(content: content,role: ChatMessageRole.user)
     ]);
 

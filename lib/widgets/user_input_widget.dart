@@ -26,7 +26,7 @@ class UserInputWidget extends HookConsumerWidget {
               _sendMessage(ref, textController);
             }
           },
-          icon: const Icon(Icons.send),
+          icon: chatUiState.onLoading ? const CircularProgressIndicator():  const Icon(Icons.send),
         ),
       ),
     );
@@ -36,7 +36,7 @@ class UserInputWidget extends HookConsumerWidget {
 
   void _sendMessage(WidgetRef ref,TextEditingController textController) {
     var content = textController.text;
-    var message = Message(uuid.v4(),content, MessageSenderType.user, DateTime.now());
+    var message = Message(id:uuid.v4(),content: content,  sender:MessageSenderType.user, timestamp:DateTime.now());
     ref.read(messageProvider.notifier).updateMessage(message);
     textController.clear();
     _requestChatGPT(ref, content);
@@ -47,12 +47,12 @@ class UserInputWidget extends HookConsumerWidget {
     ref.read(chatUiProvider.notifier).setLoading(true);
 
     try {
-      final messageId = uuid.v4();
-      final res =  await chatService.sendMessage(content);
+      final chatId = uuid.v4();
+      await chatService.sendMessageWithStream(content,onSuccess: (text){
+        final message = Message(id: chatId, content: text, sender: MessageSenderType.chatgpt, timestamp: DateTime.now());
+        ref.read(messageProvider.notifier).updateMessage(message);
+      });
 
-      final msg = res.choices.first.message?.content ?? "";
-      final message = Message(messageId,msg, MessageSenderType.chatgpt, DateTime.now());
-      ref.read(messageProvider.notifier).updateMessage(message);
     } catch (e) {
       // logger.e(e);
     } finally {

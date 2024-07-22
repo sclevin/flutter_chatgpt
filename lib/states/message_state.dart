@@ -8,9 +8,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class MessageList extends StateNotifier<List<Message>>{
   MessageList():super([]);
 
-  void addMessage(Message msg){
-    state = [...state, msg];
-  }
 
   void updateMessage(Message partialMessage){
     final index = state.indexWhere((element) => element.id == partialMessage.id );
