@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chatgpt/injection.dart';
 import 'package:flutter_chatgpt/widgets/message_list_widget.dart';
 import 'package:flutter_chatgpt/widgets/user_input_widget.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../models/message.dart';
@@ -25,6 +26,14 @@ class ChatPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chat Page'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              GoRouter.of(context).push('/history');
+            },
+            icon: const Icon(Icons.history),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8),

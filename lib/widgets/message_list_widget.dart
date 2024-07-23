@@ -10,10 +10,10 @@ class MessageListWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context,WidgetRef ref) {
-    var messages = ref.watch(messageProvider);
+    var messages = ref.watch(activeSessionMessagesProvider);
     var listController = useScrollController();
     
-    ref.listen(messageProvider, (provider,next){
+    ref.listen(activeSessionMessagesProvider, (provider,next){
       Future.delayed(const Duration(milliseconds: 50),(){
         listController.jumpTo(
           listController.position.maxScrollExtent

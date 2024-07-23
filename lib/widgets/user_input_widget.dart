@@ -5,59 +5,98 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../injection.dart';
 import '../models/message.dart';
+import '../models/session.dart';
 import '../states/message_state.dart';
+import '../states/session_state.dart';
 
 class UserInputWidget extends HookConsumerWidget {
   const UserInputWidget({super.key});
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
-    final chatUiState = ref.watch(chatUiProvider);
-    final textController = useTextEditingController();
-
+  Widget build(BuildContext context, WidgetRef ref) {
+    final chatUIState = ref.watch(chatUiProvider);
+    final controller = useTextEditingController();
     return TextField(
-      enabled: !chatUiState.onLoading,
-      controller: textController,
+      enabled: !chatUIState.onLoading,
+      controller: controller,
       decoration: InputDecoration(
-        hintText: 'Type a message',
-        suffixIcon: IconButton(
-          onPressed: (){
-            if(textController.text.isNotEmpty){
-              _sendMessage(ref, textController);
-            }
-          },
-          icon: chatUiState.onLoading ? const CircularProgressIndicator():  const Icon(Icons.send),
-        ),
-      ),
+          hintText: 'Type a message', // 显示在输入框内的提示文字
+          suffixIcon: IconButton(
+            onPressed: () {
+              // 这里处理发送事件
+              if (controller.text.isNotEmpty) {
+                _sendMessage(ref, controller);
+              }
+            },
+            icon: const Icon(
+              Icons.send,
+            ),
+          )),
     );
   }
 
+  // 增加WidgetRef
+  _sendMessage(WidgetRef ref, TextEditingController controller) async {
+    final content = controller.text;
+    Message message = _createMessage(content);
 
+    var active = ref.watch(activeSessionProvider);
+    var sessionId = active?.id ?? 0;
+    if (sessionId <= 0) {
+      active = Session(title: content);
+      // final id = await db.sessionDao.upsertSession(active);
+      active = await ref
+          .read(sessionStateNotifierProvider.notifier)
+          .upsertSession(active);
+      sessionId = active.id!;
+      ref
+          .read(sessionStateNotifierProvider.notifier)
+          .setActiveSession(active.copyWith(id: sessionId));
+    }
 
-  void _sendMessage(WidgetRef ref,TextEditingController textController) {
-    var content = textController.text;
-    var message = Message(id:uuid.v4(),content: content,  sender:MessageSenderType.user, timestamp:DateTime.now());
-    ref.read(messageProvider.notifier).updateMessage(message);
-    textController.clear();
-    _requestChatGPT(ref, content);
+    ref.read(messageProvider.notifier).upsertMessage(
+      message.copyWith(sessionId: sessionId),
+    ); // 添加消息
+    controller.clear();
+    _requestChatGPT(ref, content, sessionId: sessionId);
   }
 
+  Message _createMessage(
+      String content, {
+        String? id,
+        MessageSenderType sender = MessageSenderType.user,
+        int? sessionId,
+      }) {
+    final message = Message(
+      id: id ?? uuid.v4(),
+      content: content,
+      sender: sender,
+      timestamp: DateTime.now(),
+      sessionId: sessionId ?? 0,
+    );
+    return message;
+  }
 
-  void _requestChatGPT(WidgetRef ref, String content) async {
+  _requestChatGPT(
+      WidgetRef ref,
+      String content, {
+        int? sessionId,
+      }) async {
     ref.read(chatUiProvider.notifier).setLoading(true);
-
     try {
-      final chatId = uuid.v4();
-      await chatService.sendMessageWithStream(content,onSuccess: (text){
-        final message = Message(id: chatId, content: text, sender: MessageSenderType.chatgpt, timestamp: DateTime.now());
-        ref.read(messageProvider.notifier).updateMessage(message);
-      });
-
-    } catch (e) {
-      // logger.e(e);
+      final id = uuid.v4();
+      await chatService.sendMessageWithStream(
+        content,
+        onSuccess: (text) {
+          final message =
+          _createMessage(text, id: id, sender: MessageSenderType.chatgpt, sessionId: sessionId);
+          ref.read(messageProvider.notifier).upsertMessage(message);
+        },
+      );
+    } catch (err) {
+      // logger.e("requestChatGPT error: $err", err);
     } finally {
       ref.read(chatUiProvider.notifier).setLoading(false);
     }
   }
-
 }
