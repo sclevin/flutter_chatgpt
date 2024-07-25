@@ -14,10 +14,10 @@ class UserInputWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chatUIState = ref.watch(chatUiProvider);
     final controller = useTextEditingController();
+    final uiState = ref.watch(chatUiProvider);
     return TextField(
-      enabled: !chatUIState.onLoading,
+      enabled: !uiState.onLoading,
       controller: controller,
       decoration: InputDecoration(
           hintText: 'Type a message', // 显示在输入框内的提示文字
@@ -39,15 +39,17 @@ class UserInputWidget extends HookConsumerWidget {
   _sendMessage(WidgetRef ref, TextEditingController controller) async {
     final content = controller.text;
     Message message = _createMessage(content);
-
+    final uiState = ref.watch(chatUiProvider);
     var active = ref.watch(activeSessionProvider);
+
     var sessionId = active?.id ?? 0;
     if (sessionId <= 0) {
-      active = Session(title: content);
+      active = Session(title: content, model: uiState.model);
       // final id = await db.sessionDao.upsertSession(active);
       active = await ref
           .read(sessionStateNotifierProvider.notifier)
           .upsertSession(active);
+      logger.e("active = ${active.model}  ${active.title}  ${active.id}");
       sessionId = active.id!;
       ref
           .read(sessionStateNotifierProvider.notifier)
@@ -82,11 +84,15 @@ class UserInputWidget extends HookConsumerWidget {
       String content, {
         int? sessionId,
       }) async {
+    final uiState = ref.watch(chatUiProvider);
     ref.read(chatUiProvider.notifier).setLoading(true);
+    final messages = ref.watch(activeSessionMessagesProvider);
+    final activeSession = ref.watch(activeSessionProvider);
     try {
       final id = uuid.v4();
       await chatService.sendMessageWithStream(
-        content,
+        messages,
+        model: activeSession?.model ?? uiState.model,
         onSuccess: (text) {
           final message =
           _createMessage(text, id: id, sender: MessageSenderType.chatgpt, sessionId: sessionId);
@@ -94,7 +100,7 @@ class UserInputWidget extends HookConsumerWidget {
         },
       );
     } catch (err) {
-      // logger.e("requestChatGPT error: $err", err);
+      logger.e("requestChatGPT error: $err");
     } finally {
       ref.read(chatUiProvider.notifier).setLoading(false);
     }

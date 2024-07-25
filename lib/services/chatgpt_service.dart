@@ -1,6 +1,8 @@
 import 'package:openai_api/openai_api.dart';
+import 'package:tiktoken/tiktoken.dart';
 
 import '../env/env.dart';
+import '../models/message.dart';
 
 /// Description:
 /// Author:LiaoWen
@@ -16,19 +18,40 @@ class ChatgptService{
 
 
 
-  Future sendMessageWithStream(String content,{Function(String text)? onSuccess}) async {
+  Future sendMessageWithStream(
+  List<Message> messages,
+      {
+        String model = Models.gpt3_5Turbo,
+        Function(String text)? onSuccess
+      }) async {
     var request = ChatCompletionRequest(
-        model: Models.gpt3_5Turbo,
+        model: model,
         stream: true,
-        messages: [
-      ChatMessage(content: content,role: ChatMessageRole.user)
-    ]);
+        messages: messages.map((e) => ChatMessage(
+          content: e.content,
+          role: e.sender == MessageSenderType.user ? ChatMessageRole.user : ChatMessageRole.assistant,
+        )).toList(),
+    );
 
-    await client.sendChatCompletionStream(request,onSuccess: (p){
+    return await client.sendChatCompletionStream(request,onSuccess: (p){
       var text = p.choices.first.delta?.content;
       if(text != null){
         onSuccess?.call(text);
       }
     });
+  }
+}
+
+final maxTokens = {
+  Models.gpt3_5Turbo: 4096,
+  Models.gpt4: 8192
+};
+
+
+extension on List<ChatMessage> {
+  // TODO: limit text length
+  void limitMessages({String model = Models.gpt3_5Turbo}){
+    assert(maxTokens[model] != null, "Model not supported");
+    // encodingForModel();
   }
 }

@@ -14,6 +14,7 @@ class MessageList extends StateNotifier<List<Message>>{
   }
 
   Future<void> init() async {
+    // TODO: Select session and then query the database for messages, instead of querying all and filtering late
     state = await db.messageDao.findAllMessages();
   }
 

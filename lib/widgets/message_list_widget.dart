@@ -26,7 +26,7 @@ class MessageListWidget extends HookConsumerWidget {
           return MessageItemWidget(message: messages[index],);
         },
         separatorBuilder: (context, index) => const Divider(
-          height: 1,
+          height: 16,
         ),
         itemCount: messages.length);
   }

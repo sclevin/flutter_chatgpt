@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chatgpt/models/session.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -20,30 +21,30 @@ class ChatHistory extends HookConsumerWidget {
         child: state.when(
             data: (state) {
               return ListView(children: [
-                for (var i in state.sessionList)
+                for (var session in state.sessionList)
                   ListTile(
                     title: Row(
                       children: [
                         Expanded(
-                          child: Text(i.title),
+                          child: Text(session.title),
                         ),
+
                         IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.edit),
-                        ),
-                        IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _deleteConfirm(context, ref, session);
+                          },
                           icon: const Icon(Icons.delete),
                         ),
                       ],
                     ),
                     onTap: () {
-                      ref.read(sessionStateNotifierProvider.notifier)
-                          .setActiveSession(i);
+                      ref
+                          .read(sessionStateNotifierProvider.notifier)
+                          .setActiveSession(session);
 
                       GoRouter.of(context).pop();
                     },
-                    selected: state.activeSession?.id == i.id,
+                    selected: state.activeSession?.id == session.id,
                   ),
               ]);
             },
@@ -51,5 +52,29 @@ class ChatHistory extends HookConsumerWidget {
             loading: () => const CircularProgressIndicator()),
       ),
     );
+  }
+
+  Future _deleteConfirm(BuildContext context, WidgetRef ref, Session session) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              title: const Text("Tips"),
+              content: const Text("Are you sure to delete?"),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      GoRouter.of(context).pop();
+                    },
+                    child: const Text("Cancel")),
+
+                TextButton(
+                    onPressed: () {
+                      ref.read(sessionStateNotifierProvider.notifier).deleteSession(session);
+                     Navigator.pop(context);
+                    },
+                    child: const Text("Delete")),
+              ]);
+        });
   }
 }

@@ -1,4 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:openai_api/openai_api.dart';
 
 /// Description:
 /// Author:LiaoWen
@@ -7,7 +8,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class ChatUiState{
   final bool onLoading;
 
-  ChatUiState({this.onLoading = false});
+  final String model;
+
+  ChatUiState({
+    this.onLoading = false,
+    this.model = Models.gpt3_5Turbo
+  });
 }
 
 
@@ -16,6 +22,10 @@ class ChatUiStateProvider extends StateNotifier<ChatUiState> {
 
     void setLoading(bool loading) {
       state = ChatUiState(onLoading: loading);
+    }
+
+     set model(String model){
+      state = ChatUiState(model: model);
     }
 }
 
