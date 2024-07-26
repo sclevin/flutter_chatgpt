@@ -11,12 +11,14 @@ class ReceivedMessageItemWidget extends StatelessWidget {
   final Message message;
   final Color backgroundColor;
   final double radius;
+  final bool typing;
 
   const ReceivedMessageItemWidget({
     super.key,
     required this.message,
     this.backgroundColor = Colors.white,
-    this.radius = 8
+    this.radius = 8,
+    this.typing = false
   });
 
   @override
@@ -48,7 +50,7 @@ class ReceivedMessageItemWidget extends StatelessWidget {
               ),
               padding: const EdgeInsets.symmetric(horizontal: 8),
               margin: const EdgeInsets.only(right: 48),
-              child: MessageContentWidget(message:message),
+              child: MessageContentWidget(message:message,typing: typing,),
             )
         ),
       ],
@@ -65,7 +67,7 @@ class SendMessageItemWidget extends StatelessWidget {
     super.key,
     required this.message,
     this.backgroundColor = Colors.white,
-    this.radius = 8
+    this.radius = 8,
   });
 
   @override
@@ -83,7 +85,7 @@ class SendMessageItemWidget extends StatelessWidget {
               ),
               padding: const EdgeInsets.symmetric(horizontal: 8),
               margin: const EdgeInsets.only(left: 48),
-              child: MessageContentWidget(message:message),
+              child: MessageContentWidget(message:message,),
             )
         ),
         CustomPaint(
