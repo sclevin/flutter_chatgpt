@@ -10,6 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await setupDatabase();
+  print(await sqfliteDatabaseFactory.getDatabasePath("flutter_chatgpt.db"));
 
   runApp(const MyApp());
 }

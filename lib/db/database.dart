@@ -23,7 +23,7 @@ abstract class AppDatabase extends FloorDatabase {
 
 Future<AppDatabase> initDatabase() async {
   return await $FloorAppDatabase
-      .databaseBuilder('app_database.db')
+      .databaseBuilder('flutter_chatgpt.db')
       .addMigrations([
     Migration(1, 2, (database) async {
       await database.execute(

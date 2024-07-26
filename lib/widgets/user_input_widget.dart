@@ -37,10 +37,12 @@ class UserInputWidget extends HookConsumerWidget {
 
   // 增加WidgetRef
   _sendMessage(WidgetRef ref, TextEditingController controller) async {
-    final content = controller.text;
-    Message message = _createMessage(content);
     final uiState = ref.watch(chatUiProvider);
     var active = ref.watch(activeSessionProvider);
+
+    final content = controller.text;
+    Message message = _createMessage(content);
+
 
     var sessionId = active?.id ?? 0;
     if (sessionId <= 0) {
