@@ -70,7 +70,12 @@ class ChatHistory extends HookConsumerWidget {
 
                 TextButton(
                     onPressed: () {
-                      ref.read(sessionStateNotifierProvider.notifier).deleteSession(session);
+                      ref.read(sessionStateNotifierProvider.notifier)
+                          .deleteSession(session);
+                      ref.read(sessionStateNotifierProvider.notifier)
+                      .setActiveSession(null);
+
+                      // TODO: fix the bug that cannot pop the dialog
                      Navigator.pop(context);
                     },
                     child: const Text("Delete")),

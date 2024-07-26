@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chatgpt/injection.dart';
 import 'package:flutter_chatgpt/states/session_state.dart';
 import 'package:flutter_chatgpt/widgets/chat_gpt_model_widget.dart';
+import 'package:flutter_chatgpt/widgets/chat_input_widget.dart';
 import 'package:flutter_chatgpt/widgets/message_list_widget.dart';
-import 'package:flutter_chatgpt/widgets/user_input_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -17,8 +17,6 @@ import 'message_item_widget.dart';
 /// Date:2024/7/18
 class ChatPage extends HookConsumerWidget {
   ChatPage({super.key});
-
-  final _textController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,8 +41,9 @@ class ChatPage extends HookConsumerWidget {
               icon: Icon(Icons.add))
         ],
       ),
-      body: Padding(
+      body: Container(
         padding: const EdgeInsets.all(8),
+        color: Colors.white,
         child: Column(
           children: [
             GptModelWidget(
@@ -56,7 +55,7 @@ class ChatPage extends HookConsumerWidget {
             const Expanded(
               child: MessageListWidget(),
             ),
-            UserInputWidget()
+            const ChatInputWidget()
           ],
         ),
       ),

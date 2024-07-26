@@ -1,3 +1,4 @@
+import 'package:flutter_chatgpt/injection.dart';
 import 'package:openai_api/openai_api.dart';
 import 'package:tiktoken/tiktoken.dart';
 
@@ -39,6 +40,13 @@ class ChatgptService{
         onSuccess?.call(text);
       }
     });
+  }
+
+
+  Future<String> speechToText(String path) async{
+    final result = await client.createTranscription(TranscriptionRequest(file: path));
+    logger.t(result);
+    return result.text;
   }
 }
 
