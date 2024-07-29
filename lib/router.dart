@@ -1,5 +1,7 @@
-import 'package:flutter_chatgpt/widgets/chat_history.dart';
-import 'package:flutter_chatgpt/widgets/chat_page.dart';
+import 'package:flutter_chatgpt/view/chat_history.dart';
+import 'package:flutter_chatgpt/view/chat_view.dart';
+import 'package:flutter_chatgpt/view/setting_view.dart';
+
 import 'package:go_router/go_router.dart';
 
 /// Description:
@@ -9,10 +11,14 @@ import 'package:go_router/go_router.dart';
 final router = GoRouter(routes: [
   GoRoute(
     path: "/",
-    builder: (context, state) => ChatPage(),
+    builder: (context, state) => ChatView(),
   ),
   GoRoute(
     path: '/history',
     builder: (context, state) => ChatHistory(),
-  )
+  ),
+
+  GoRoute(
+      path: '/settings',
+      builder: (context, state) => SettingView())
 ]);

@@ -10,13 +10,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/message.dart';
 import '../states/chat_ui_state.dart';
 import '../states/message_state.dart';
-import 'message_item_widget.dart';
+import '../widgets/message_item_widget.dart';
 
 /// Description:
 /// Author:LiaoWen
 /// Date:2024/7/18
-class ChatPage extends HookConsumerWidget {
-  ChatPage({super.key});
+class ChatView extends HookConsumerWidget {
+  ChatView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,13 +32,20 @@ class ChatPage extends HookConsumerWidget {
             },
             icon: const Icon(Icons.history),
           ),
+
           IconButton(
               onPressed: () {
                 ref
                     .read(sessionStateNotifierProvider.notifier)
                     .setActiveSession(null);
               },
-              icon: Icon(Icons.add))
+              icon: Icon(Icons.add)),
+
+          IconButton(
+              onPressed: () {
+                GoRouter.of(context).push('/settings');
+              },
+              icon: Icon(Icons.settings_outlined))
         ],
       ),
       body: Container(
