@@ -9,8 +9,8 @@ import '../states/session_state.dart';
 /// Author:LiaoWen
 /// Date:2024/7/23
 
-class ChatHistory extends HookConsumerWidget {
-  const ChatHistory({super.key});
+class ChatHistoryScreen extends HookConsumerWidget {
+  const ChatHistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

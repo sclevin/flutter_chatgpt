@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:flutter/material.dart';
+
 /// Description:
 /// Author:LiaoWen
 /// Date:2024/7/26
@@ -9,4 +12,17 @@ bool isDesktop() {
 
 bool isApplePlatform() {
   return Platform.isIOS || Platform.isMacOS;
+}
+
+
+void initWindow() {
+  if (isDesktop()) {
+    doWhenWindowReady(() {
+      const initialSize = Size(800, 600);
+      appWindow.minSize = initialSize;
+      appWindow.size = initialSize;
+      appWindow.alignment = Alignment.center;
+      appWindow.show();
+    });
+  }
 }

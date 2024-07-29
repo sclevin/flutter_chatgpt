@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chatgpt/db/database.dart';
 import 'package:flutter_chatgpt/injection.dart';
 import 'package:flutter_chatgpt/router.dart';
+import 'package:flutter_chatgpt/utils/platform_utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void main() async {
@@ -13,6 +14,8 @@ void main() async {
   await chatService.loadConfig();
 
   print(await sqfliteDatabaseFactory.getDatabasePath("flutter_chatgpt.db"));
+
+  initWindow();
 
   runApp(const MyApp());
 }

@@ -7,8 +7,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 /// Author:LiaoWen
 /// Date:2024/7/29
 
-class SettingView extends StatelessWidget {
-  const SettingView({super.key});
+class SettingScreen extends StatelessWidget {
+  const SettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
