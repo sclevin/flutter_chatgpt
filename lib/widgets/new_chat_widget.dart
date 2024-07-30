@@ -15,15 +15,16 @@ class NewChatWidget extends HookConsumerWidget {
         height: 40,
         child: OutlinedButton.icon(
           style: ButtonStyle(
+            textStyle: WidgetStateProperty.all(Theme.of(context).textTheme.titleMedium),
+            iconSize: WidgetStateProperty.all(Theme.of(context).iconTheme.size),
+            iconColor: WidgetStateProperty.all(Theme.of(context).textTheme.titleMedium?.color),
+            foregroundColor: WidgetStateProperty.all(Theme.of(context).textTheme.titleMedium?.color),
             alignment: Alignment.centerLeft,
             shape: WidgetStateProperty.all(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8)
               )
             ),
-
-            iconColor: WidgetStateProperty.all(Colors.black),
-            foregroundColor: WidgetStateProperty.all(Colors.black)
           ),
             onPressed: (){
               ref.read(sessionStateNotifierProvider.notifier).setActiveSession(null);

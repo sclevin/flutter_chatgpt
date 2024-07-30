@@ -6,7 +6,7 @@ import 'package:flutter_chatgpt/screen/home_screen.dart';
 import 'package:flutter_chatgpt/screen/setting_screen.dart';
 import 'package:go_router/go_router.dart';
 
-import 'utils/platform_utils.dart';
+import '../utils/platform_utils.dart';
 
 /// Description:
 /// Author:LiaoWen

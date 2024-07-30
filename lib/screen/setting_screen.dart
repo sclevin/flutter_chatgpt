@@ -16,29 +16,70 @@ class SettingScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Setting'),
       ),
-
       body: const SettingWindow(),
     );
   }
 }
 
-
 class SettingWindow extends HookConsumerWidget {
   const SettingWindow({super.key});
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final items = ref.watch(settingListProvider);
+    final appTheme = ref.watch(settingsStateProvider).valueOrNull?.themeMode ??
+        ThemeMode.system;
 
     final controller = useTextEditingController();
 
     return ListView.separated(
-        itemBuilder: (context,index){
+        itemBuilder: (context, index) {
           final item = items[index];
-          return ListTile(
+
+          if (item.key == SettingsKey.theme) {
+            return ListTile(
               title: Text(item.title),
-          subtitle: Text(item.subTitle ?? 'Unknown'),
-          trailing: const Icon(Icons.arrow_forward_ios),
+              subtitle: Row(
+                children: [
+                  RadioMenuButton(
+                    value: ThemeMode.system,
+                    groupValue: appTheme,
+                    onChanged: (v) {
+                      ref
+                          .read(settingsStateProvider.notifier)
+                          .setThemeMode(ThemeMode.system);
+                    },
+                    child: const Text("System"),
+                  ),
+                  RadioMenuButton(
+                    value: ThemeMode.light,
+                    groupValue: appTheme,
+                    onChanged: (v) {
+                      ref
+                          .read(settingsStateProvider.notifier)
+                          .setThemeMode(ThemeMode.light);
+                    },
+                    child: const Text("Light"),
+                  ),
+                  RadioMenuButton(
+                    value: ThemeMode.dark,
+                    groupValue: appTheme,
+                    onChanged: (v) {
+                      ref
+                          .read(settingsStateProvider.notifier)
+                          .setThemeMode(ThemeMode.dark);
+                    },
+                    child: const Text("Dark"),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return ListTile(
+            title: Text(item.title),
+            subtitle: Text(item.subTitle ?? 'Unknown'),
+            trailing: const Icon(Icons.arrow_forward_ios),
             onTap: () async {
               final text = await showEditor(controller, item, ref);
               if (text == null) return;
@@ -58,39 +99,34 @@ class SettingWindow extends HookConsumerWidget {
             },
           );
         },
-        separatorBuilder: (context,index) => const Divider(),
+        separatorBuilder: (context, index) => const Divider(),
         itemCount: items.length);
   }
 
-
-
-  Future<String?> showEditor(TextEditingController controller,SettingItem item,WidgetRef ref) async{
+  Future<String?> showEditor(
+      TextEditingController controller, SettingItem item, WidgetRef ref) async {
     controller.text = item.subTitle ?? '';
-    return await showDialog(context: ref.context,
+    return await showDialog(
+        context: ref.context,
         builder: (context) => AlertDialog(
-          actions: [
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }
-            ),
-
-            TextButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  final text = controller.text;
-                  controller.clear();
-                  Navigator.of(context).pop(text);
-                }
-            ),
-          ],
-          title: Text(item.title),
-          content: TextField(
-            controller: controller,
-            decoration: InputDecoration(hintText: item.hint),
-          )
-        ));
+                actions: [
+                  TextButton(
+                      child: const Text('Cancel'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      }),
+                  TextButton(
+                      child: const Text('OK'),
+                      onPressed: () {
+                        final text = controller.text;
+                        controller.clear();
+                        Navigator.of(context).pop(text);
+                      }),
+                ],
+                title: Text(item.title),
+                content: TextField(
+                  controller: controller,
+                  decoration: InputDecoration(hintText: item.hint),
+                )));
   }
-
 }

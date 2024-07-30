@@ -24,7 +24,6 @@ class ChatScreen extends HookConsumerWidget {
 
     return Container(
       padding: const EdgeInsets.all(8),
-      color: Colors.white,
       child: Column(
         children: [
           Row(

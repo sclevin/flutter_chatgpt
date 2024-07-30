@@ -1,8 +1,10 @@
 import 'package:floor/floor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chatgpt/config/theme.dart';
 import 'package:flutter_chatgpt/db/database.dart';
 import 'package:flutter_chatgpt/injection.dart';
-import 'package:flutter_chatgpt/router.dart';
+import 'package:flutter_chatgpt/config/router.dart';
+import 'package:flutter_chatgpt/states/settings_state.dart';
 import 'package:flutter_chatgpt/utils/platform_utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -17,23 +19,22 @@ void main() async {
 
   initWindow();
 
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends HookConsumerWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    return ProviderScope(
-        child:MaterialApp.router(
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-            useMaterial3: true,
-          ),
-          routerConfig: router,
-        ),
+  Widget build(BuildContext context,WidgetRef ref) {
+    final appThemeMode = ref.watch(settingsStateProvider).valueOrNull?.themeMode;
+    
+    return MaterialApp.router(
+      theme: lightThemeData,
+      darkTheme: darkThemeData,
+      themeMode: appThemeMode,
+      routerConfig: router,
     );
   }
 }
