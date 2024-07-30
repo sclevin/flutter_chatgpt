@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_chatgpt/db/database.dart';
 import 'package:flutter_chatgpt/services/chatgpt_service.dart';
+import 'package:flutter_chatgpt/services/export_service.dart';
 import 'package:flutter_chatgpt/services/record_service.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,3 +31,5 @@ late SharedPreferences localStore;
 setupLocalStore() async {
   localStore = await SharedPreferences.getInstance();
 }
+
+final exportService = ExportService();
