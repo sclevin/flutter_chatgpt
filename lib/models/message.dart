@@ -15,20 +15,22 @@ class Message {
 
   // TODO: fix the bug that message cannot be deleted when session is deleted
   @ForeignKey(
-    childColumns: ['session_id'],
-    parentColumns: ['id'],
     entity: Session,
+    parentColumns: ["id"],
+    childColumns: ["session_id"],
     onDelete: ForeignKeyAction.cascade
   )
-  @ColumnInfo(name: 'session_id')
+  @ColumnInfo(name: "session_id")
   final int? sessionId;
 
   Message(
-      {required this.id,
-      required this.content,
-      required this.sender,
-      required this.timestamp,
-      this.sessionId});
+      {
+        required this.id,
+        required this.content,
+        required this.sender,
+        required this.timestamp,
+        this.sessionId
+      });
 
   @override
   bool operator ==(other) {
