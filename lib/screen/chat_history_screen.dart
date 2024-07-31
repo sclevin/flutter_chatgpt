@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chatgpt/injection.dart';
 import 'package:flutter_chatgpt/models/session.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -17,7 +18,7 @@ class ChatHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("History")),
+      appBar: AppBar(title: Text(appIntl.of(context)!.chatHistoryTitle)),
       body: const ChatHistoryWindow(),
     );
   }
@@ -32,7 +33,9 @@ class ChatHistoryWindow extends HookConsumerWidget {
     return Center(
       child: state.when(
           data: (state) {
-            return ListView(children: [
+            return ListView(
+              padding: EdgeInsets.zero,
+                children: [
               for (var i in state.sessionList) ChatHistoryItemWidget(i: i),
             ]);
           },

@@ -20,7 +20,7 @@ class HomeScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat'),
+        title: Text(appIntl.of(context)!.chatScreenTitle),
         actions: [
           IconButton(
             onPressed: () {
@@ -36,17 +36,22 @@ class HomeScreen extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            DrawerHeader(
-                decoration:
-                    BoxDecoration(color: Theme.of(context).primaryColor),
-                child: const Text(
-                  'Chat History',
-                  style: TextStyle(color: Colors.white, fontSize: 22),
-                )),
+            SizedBox(
+              height: 150,
+              child: DrawerHeader(
+                  decoration:
+                  BoxDecoration(color: Theme.of(context).primaryColor),
+                  child:  Text(
+                    appIntl.of(context)!.chatHistoryTitle,
+                    style: const TextStyle(color: Colors.white, fontSize: 22),
+                  )),
+            ),
+
             const Expanded(child: ChatHistoryWindow()),
+
             ListTile(
               leading: const Icon(Icons.settings_outlined),
-              title: const Text("Settings"),
+              title: Text(appIntl.of(context)!.settingsTitle),
               onTap: () {
                 Navigator.of(context).pop();
                 GoRouter.of(context).push('/settings');
@@ -89,9 +94,9 @@ class DeskTopHomeScreen extends StatelessWidget {
                       showDialog(
                           context: context,
                           builder: (context) {
-                            return const AlertDialog(
-                              title: Text("Settings"),
-                              content: SizedBox(
+                            return  AlertDialog(
+                              title: Text(appIntl.of(context)!.settingsTitle),
+                              content: const SizedBox(
                                 height: 400,
                                 width: 400,
                                 child: SettingWindow(),
