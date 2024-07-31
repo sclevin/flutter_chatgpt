@@ -4,13 +4,33 @@ A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+1.flutter clean
 
-A few resources to get you started if this is your first Flutter project:
+2.flutter pub get
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+3.flutter gen-l10n
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+4.flutter pub run build_runner build --delete-conflicting-outputs
+
+
+
+## Build
+Android: flutter build apk --release
+    tips: This APP not signed
+
+IOS: Need ios account
+
+MacOS: flutter build macos
+    tips: default app. convert to dmg
+    1.brew install create-dmg
+    2.into Root project dir
+        create-dmg --volname ChatGPT \
+        --icon-size 100  \
+        --window-pos 200 120 \
+        --window-size 800 400 \
+        --app-drop-link 600 185  \
+        build/macos/Build/Products/Release/chatgpt.dmg \
+        build/macos/Build/Products/Release/chatgpt.app
+
+Windows: flutter build windows
+    tips: use "Inno Setup" created Bootloader program
