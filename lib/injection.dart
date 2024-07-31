@@ -6,6 +6,7 @@ import 'package:flutter_chatgpt/services/record_service.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Description:
 /// Author:LiaoWen
@@ -33,3 +34,5 @@ setupLocalStore() async {
 }
 
 final exportService = ExportService();
+
+typedef appIntl = AppLocalizations;

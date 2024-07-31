@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chatgpt/injection.dart';
 import 'package:flutter_chatgpt/states/session_state.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -30,7 +31,7 @@ class NewChatWidget extends HookConsumerWidget {
               ref.read(sessionStateNotifierProvider.notifier).setActiveSession(null);
             },
             icon: const Icon(Icons.add),
-            label: const Text('New Chat')),
+            label: Text(appIntl.of(context)!.newChatTitle)),
       )
     );
   }

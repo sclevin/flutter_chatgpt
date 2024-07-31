@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chatgpt/injection.dart';
 import 'package:flutter_chatgpt/screen/chat_history_screen.dart';
 import 'package:flutter_chatgpt/screen/chat_screen.dart';
 import 'package:flutter_chatgpt/screen/setting_screen.dart';
@@ -83,7 +84,7 @@ class DeskTopHomeScreen extends StatelessWidget {
                   const Divider(),
                   ListTile(
                     leading: const Icon(Icons.settings_outlined),
-                    title: const Text("Settings"),
+                    title: Text(appIntl.of(context)!.settingsTitle),
                     onTap: () {
                       showDialog(
                           context: context,

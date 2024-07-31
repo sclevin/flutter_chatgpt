@@ -14,12 +14,12 @@ part 'settings_state.g.dart';
 
 @freezed
 abstract class Settings with _$Settings {
-  const factory Settings({
-    String? apiKey,
-    String? httpProxy,
-    String? baseUrl,
-    @Default(ThemeMode.system) ThemeMode themeMode,
-  }) = _Settings;
+  const factory Settings(
+      {String? apiKey,
+      String? httpProxy,
+      String? baseUrl,
+      @Default(ThemeMode.system) ThemeMode themeMode,
+      Locale? locale}) = _Settings;
 
   static Settings load() {
     final apiKey = localStore.getString(SettingsKey.apiKey.name);
@@ -29,22 +29,35 @@ abstract class Settings with _$Settings {
     final appTheme =
         localStore.getInt(SettingsKey.theme.name) ?? ThemeMode.system.index;
 
+    final locale = localStore.getString(SettingsKey.locale.name);
+
     return Settings(
-      apiKey: apiKey,
-      httpProxy: httpProxy,
-      baseUrl: baseUrl,
-      themeMode: ThemeMode.values[appTheme],
-    );
+        apiKey: apiKey,
+        httpProxy: httpProxy,
+        baseUrl: baseUrl,
+        themeMode: ThemeMode.values[appTheme],
+        locale: locale == null ? null : Locale(locale));
   }
 }
 
-enum SettingsKey { apiKey, httpProxy, baseUrl, theme }
+enum SettingsKey { apiKey, httpProxy, baseUrl, theme, locale }
 
 @riverpod
 class SettingsState extends _$SettingsState {
   @override
   FutureOr<Settings> build() async {
     return Settings.load();
+  }
+
+  Future<void> setLocale(Locale? locale) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await localStore.setString(
+          SettingsKey.locale.name, locale?.languageCode ?? "en");
+      final settings = state.valueOrNull ?? const Settings();
+      chatService.loadConfig();
+      return settings.copyWith(locale: locale);
+    });
   }
 
   Future<void> setThemeMode(ThemeMode themeMode) async {
@@ -88,41 +101,3 @@ class SettingsState extends _$SettingsState {
   }
 }
 
-@freezed
-class SettingItem with _$SettingItem {
-  const factory SettingItem({
-    required SettingsKey key,
-    required String title,
-    required String hint,
-    String? subTitle,
-    dynamic value,
-  }) = _SettingItem;
-}
-
-@riverpod
-List<SettingItem> settingList(SettingListRef ref) {
-  final settings = ref.watch(settingsStateProvider).valueOrNull;
-
-  return [
-    SettingItem(
-        key: SettingsKey.apiKey,
-        title: 'API Key',
-        subTitle: settings?.apiKey,
-        hint: 'Please Input API Key'),
-    SettingItem(
-        key: SettingsKey.httpProxy,
-        title: 'HTTP Proxy',
-        subTitle: settings?.httpProxy,
-        hint: 'Please Input Http Proxy'),
-    SettingItem(
-        key: SettingsKey.baseUrl,
-        title: 'Base URL',
-        subTitle: settings?.baseUrl,
-        hint: 'Please Input Base URL'),
-    SettingItem(
-        key: SettingsKey.theme,
-        title: 'APP Theme',
-        value: settings?.themeMode,
-        hint: 'APP Theme'),
-  ];
-}
