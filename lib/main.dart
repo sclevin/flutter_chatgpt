@@ -27,15 +27,15 @@ class MyApp extends HookConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context,WidgetRef ref) {
-    final setttings = ref.watch(settingsStateProvider).valueOrNull;
+    final settings = ref.watch(settingsStateProvider).valueOrNull;
     
     return MaterialApp.router(
       theme: lightThemeData,
       darkTheme: darkThemeData,
-      themeMode: setttings?.themeMode,
+      themeMode: settings?.themeMode,
       localizationsDelegates: appIntl.localizationsDelegates,
       supportedLocales: appIntl.supportedLocales,
-      locale: setttings?.locale,
+      locale: settings?.locale,
       routerConfig: router,
     );
   }

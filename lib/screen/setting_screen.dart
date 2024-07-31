@@ -15,7 +15,7 @@ class SettingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Setting'),
+        title: Text(appIntl.of(context)!.settingsTitle),
       ),
       body: const SettingWindow(),
     );
@@ -27,11 +27,6 @@ class SettingWindow extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final items = ref.watch(settingsStateProvider);
-    final appTheme = ref.watch(settingsStateProvider).valueOrNull?.themeMode ??
-        ThemeMode.system;
-
-    final controller = useTextEditingController();
 
     return ListView(
       children: const [
@@ -47,7 +42,6 @@ class SettingWindow extends HookConsumerWidget {
       ],
     );
   }
-
 }
 
 
